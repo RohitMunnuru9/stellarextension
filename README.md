@@ -1,288 +1,492 @@
-# Stellar — Privacy-First Visual Browser Agent (Chrome extension)
+<a id="readme-top"></a>
 
-A Chrome extension for [stellarai.site](https://stellarai.site/) that implements the
-SIH 2026 *STELLAR_6* idea (PS 26171 — *On-device Visual Perception for Light-Weight
-Browser Agents*):
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F0C29,50:302B63,100:7C3AED&height=220&section=header&text=Stellar&fontSize=70&fontColor=ffffff&animation=fadeIn&fontAlignY=36&desc=Privacy-first%20visual%20browser%20agent%20for%20Chrome&descAlignY=58&descSize=18" width="100%" alt="Stellar banner"/>
+</p>
 
-> **Capture → Detect → Redact → Reason → Validate → Execute**
-> AI sees what it needs, and not what it shouldn't.
+<p align="center">
+  <img src="icons/icon128.png" width="96" alt="Stellar logo"/>
+</p>
 
-The agent looks at the current tab, replaces credentials and personal data with
-semantic tags such as `[EMAIL_01]` / `[PASSWORD_01]`, sends **only the sanitized
-frame** to Gemini, then validates the action Gemini proposes **locally** before
-performing it in the page. Every stage is shown live in the side panel on the right,
-so you can show people exactly what leaves the machine.
+<h1 align="center">Stellar: Privacy-First Visual Browser Agent</h1>
 
-![pipeline](https://img.shields.io/badge/pipeline-capture→detect→redact→send→reason→validate→execute-7c3aed)
+<p align="center">
+  <b>A Chrome extension that does tasks on web pages for you, while your passwords, IDs, faces and personal details stay on your device.</b>
+</p>
 
-## ⬇️ Download
+<p align="center">
+  <img src="https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Chrome Manifest V3"/>
+  <img src="https://img.shields.io/badge/JavaScript-ES_Modules-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript ES modules"/>
+  <img src="https://img.shields.io/badge/Google_Gemini-REST_API-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini REST API"/>
+  <img src="https://img.shields.io/badge/Transformers.js-4.3.1-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Transformers.js 4.3.1"/>
+  <img src="https://img.shields.io/badge/ONNX_Runtime_Web-WebGPU_%7C_WASM-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX Runtime Web"/>
+  <img src="https://img.shields.io/badge/MediaPipe-BlazeFace-0097A7?style=for-the-badge&logo=google&logoColor=white" alt="MediaPipe BlazeFace"/>
+  <img src="https://img.shields.io/badge/pdf.js-6.4.299-E66000?style=for-the-badge&logo=mozilla&logoColor=white" alt="pdf.js 6.4.299"/>
+  <br/>
+  <img src="https://img.shields.io/badge/version-0.5.0-7C3AED?style=for-the-badge" alt="Version 0.5.0"/>
+  <img src="https://img.shields.io/badge/build_step-none-22D3EE?style=for-the-badge" alt="No build step"/>
+  <img src="https://img.shields.io/github/last-commit/RohitMunnuru9/stellarextension?style=for-the-badge&color=7C3AED" alt="Last commit"/>
+  <img src="https://img.shields.io/github/repo-size/RohitMunnuru9/stellarextension?style=for-the-badge&color=302B63" alt="Repo size"/>
+  <img src="https://img.shields.io/github/stars/RohitMunnuru9/stellarextension?style=for-the-badge&color=22D3EE" alt="Stars"/>
+</p>
 
-[![Download Stellar extension (.zip)](https://img.shields.io/badge/Download-Stellar%20extension%20(.zip)-7c3aed?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/manohar-munna/Stellar-extension/archive/refs/heads/main.zip)
+<p align="center">
+  <a href="#-about">About</a> •
+  <a href="#-overview">Overview</a> •
+  <a href="#-key-features">Features</a> •
+  <a href="#-tech-stack">Tech stack</a> •
+  <a href="#-architecture">Architecture</a> •
+  <a href="#-getting-started">Getting started</a> •
+  <a href="#-usage">Usage</a> •
+  <a href="#-how-it-works">How it works</a> •
+  <a href="#-offline-demo-site">Demo</a>
+</p>
 
-**[Download the latest version (.zip)](https://github.com/manohar-munna/Stellar-extension/archive/refs/heads/main.zip)** —
-always built from the newest commit on `main`, so it is never out of date.
+<p align="center">
+  <b>Capture → Detect → Redact → Send → Reason → Validate → Execute</b><br/>
+  <i>The AI sees what it needs to see, and nothing it shouldn't.</i>
+</p>
 
----
+<div align="center">
+<table>
+  <tr>
+    <td align="center"><h3>7</h3><sub>pipeline stages per step</sub></td>
+    <td align="center"><h3>16</h3><sub>private-data categories</sub></td>
+    <td align="center"><h3>11</h3><sub>allow-listed action types</sub></td>
+    <td align="center"><h3>0.5B</h3><sub>on-device vision-language model</sub></td>
+    <td align="center"><h3>0</h3><sub>build steps: load it unpacked</sub></td>
+  </tr>
+</table>
+</div>
 
-## Install (2 minutes)
+<p align="center">
+  <a href="docs/stellar-flow.svg"><img src="docs/stellar-flow.png" width="100%" alt="Stellar: one step of a task in Local-first mode. On your device: capture and label, decide on-device, detect, redact, send. In the cloud: Gemini reasons on the redacted frame. Back on the device: validate, then execute with real mouse and keyboard."/></a>
+  <br/>
+  <sub><b>Stellar: one step of a task (Local-first mode)</b> · <a href="docs/stellar-flow.svg">full-size SVG</a> · <a href="docs/how-it-works.html">one-page explainer (HTML)</a></sub>
+</p>
 
-1. [Download the zip](https://github.com/manohar-munna/Stellar-extension/archive/refs/heads/main.zip) and
-   unzip it. You get a folder named **`Stellar-extension-main`** (the one containing `manifest.json`).
-   Keep it somewhere permanent — Chrome loads the extension from that folder.
-2. Open `chrome://extensions` in Chrome and turn on **Developer mode** (top right).
-3. Click **Load unpacked** and select the `Stellar-extension-main` folder.
-4. Pin the ⭐ Stellar icon. Click it (or press **Alt+Shift+S**) to open the side panel.
-5. Click the ⚙ gear → paste one or more **Gemini API keys**, comma-separated
-   (from [aistudio.google.com](https://aistudio.google.com/apikey)) → **Test keys & load models** → **Save**.
-   Rejected or rate-limited keys are rotated out automatically, like Stellar's key manager.
+## 🌌 About
 
-**Updating:** download the zip again, replace the folder's contents, then click the ↻ reload icon on the
-Stellar card in `chrome://extensions`. Settings and the vault are kept.
+**Stellar** is a Chrome extension that lets an AI agent use the web for you without handing your private data to the cloud. You describe a task in the side panel, such as filling in a form, comparing prices or summarising a page. Stellar works through it step by step, clicking and typing on the real page with real mouse and keyboard input.
 
-## Use it
+Most visual browser agents send screenshots of your tabs to a cloud model. Those screenshots are full of things that should never leave your computer: saved passwords, card numbers, Aadhaar and PAN numbers, API keys, email addresses, other people's names, and faces. Stellar puts a **local privacy layer** in the way.
 
-| Button | What happens |
-| --- | --- |
-| **Snapshot** | Capture → Detect → Redact and show the exact payload that *would* be sent. No reasoning call — the best way to demo redaction. |
-| **Run agent** | Full loop. Type a task (e.g. *"Search for wireless earbuds and open the cheapest result"*) and press **Run** (or Ctrl+Enter). |
-| **Stop** | Aborts the in-flight Gemini call and stops the loop. |
-| 👁 Presenter mode | Blurs raw captures inside the panel so you can screen-share safely. |
-| ↗ Pop-out | Opens the panel in its own big window for projecting. It drives the last-focused browser window. |
-| Export run | Downloads a JSON log of the run (sanitized frames only, never raw captures or private values). |
-| 📝 **Summarize page** | Summarizes the page you're on in simple words — key points plus a *Watch out for* list (fees, auto-renewal, data sharing). The text is read on-device and private details become tags before anything is sent. |
-| ⚖️ **Compare prices** | Type a product (e.g. *boAt Airdopes 141 under 2000*) and press it. Amazon, Flipkart and Myntra open in background tabs at the same time and you get one table, cheapest first. |
-| ⏰ **Schedule** | Runs a task by itself at a set time — e.g. *“Every morning at 9, check train ticket prices and tell me”*. |
+Every step runs through seven stages: capture, detect, redact, send, reason, validate and execute.
+- **Detect and redact:** private data is found **on your device** using DOM rules, pattern matching, your private vault and a WebAssembly face detector. It is then blurred, blacked out or replaced with tags such as `[EMAIL_01]`.
+- **Send:** a leak check scans the outgoing text, and then **only the sanitized frame** goes to Google Gemini.
+- **Validate and execute:** Gemini answers with a single proposed action, and a **local validator** approves it, blocks it or asks you first. Tags turn back into real values only on your machine.
 
-**Getting around**
+In **Local-first** mode, an on-device vision-language model (FastVLM-0.5B running on WebGPU) handles simple steps by itself, so those steps send nothing to the cloud at all.
 
-- **Home screen**: connect Gemini right there (paste the key, press *Connect*), try a tool with one click, tap
-  an example task, or re-run a **recent** task. It comes back when you close the last task tab.
-- **Keyboard**: <kbd>/</kbd> jumps to the task box, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> runs, <kbd>↑</kbd>/<kbd>↓</kbd>
-  in an empty box steps through recent tasks.
-- **Under every result**: *Copy*, *↻ Run again*, and on a price comparison *⏰ Watch price daily* (a price watch
-  that compares at the set time and notifies you with the cheapest).
-- **After a summary**: *Ask about this page* — follow-up questions answered from the same tagged text, with the
-  same leak check; the privacy report updates.
-- **Settings** save as you change them, with section tabs at the top to jump around.
-- **Colours**: the palette button in the header picks a light colour theme — Ocean (default), Teal, Mint,
-  Forest, Indigo, Lavender, Berry, Rose, Coral, Sunset, Amber, Sand or Slate — or Dark. The panel no longer switches to dark on its own when the computer is in dark mode.
+Alongside the agent, Stellar includes a page summariser, price comparison across Indian stores, scheduled tasks written in plain language, voice input, and a private vault for your details. Every stage is shown live in the side panel, so you can see exactly what leaves your machine. It is plain JavaScript with no build step: load the folder unpacked and it runs.
 
-**Privacy report** — every finished task ends with a short report in plain words, e.g.
-*“Hid 3 emails, 1 password and 2 names. Sent 0 private items to the cloud.”* It counts each private item that
-was hidden (by type), the requests sent to Gemini and their leak checks, the steps decided on-device, and warns
-honestly when the cloud vision detector sent raw screenshots. It is also included in *Export run*.
+## 📑 Table of Contents
 
-**Summarize page** — works on articles, terms & conditions, docs, any readable page. The panel shows exactly what
-was sent (tagged text only — no screenshot, no links). In the summary shown to you, names and emails are filled
-back in locally; passwords, card and ID numbers stay as tags. Needs Gemini (not available in On-device only mode).
+- [About](#-about)
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [Permissions](#-permissions)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Usage](#-usage)
+- [How It Works](#-how-it-works)
+- [Offline Demo Site](#-offline-demo-site)
+- [Limitations](#-limitations)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
 
-**Compare prices** — stores are picked in Settings → *Price compare* (Amazon, Flipkart, Myntra by default; Ajio,
-Meesho, Snapdeal optional), or named in the text (*“… on Amazon and Myntra”*). A budget (*under 2000*,
-*under 70k*) filters the results. Only the product cards are read from each store — never your account name,
-delivery address or cart. Gemini then picks the real matches (not cases or accessories) from numbered listings
-and writes a one-line verdict; product links stay on your device. Without a key (or in On-device only mode) the
-match is made on-device from the words in the product name. Store tabs close when done; a store that shows a bot
-check or refuses the request is left open for you.
+## 🔭 Overview
 
-**Schedule** — type the whole sentence in the task box and press ⏰: the time and days are filled in for you
-(*every morning / evening*, *at 9*, *8:30 am*, *weekdays*, *weekends*, *every Monday and Thursday*). Pick Safe or
-Autopilot and, optionally, the page to start on. At the set time Stellar opens a small window beside your browser
-and runs the task in a browser window of its own, then shows the answer as a notification (and keeps it in the
-panel and the schedule list). In Safe mode a risky step waits for you — Stellar notifies you. Chrome must be
-open at the set time; if it was closed, the task runs when Chrome starts (up to 6 hours late).
+### The problem
 
-**Reading the panel**
+Visual browser agents work by sending screenshots of your tabs to a cloud model. Those screenshots often hold things that should never leave your computer: saved passwords, card numbers, Aadhaar and PAN numbers, API keys, email addresses, other people's names, and faces.
 
-- **Task tabs** (under Run/Snapshot): every task or snapshot gets its own tab — `Task 1`, `Task 2`, … — with a
-  status dot (blue running · yellow needs you · green done · red stopped). Click to switch, × to close.
-- **Stage rail** (left): the current step (`Step 3/15`) and all seven stages. The pulsing node is the stage running
-  now; each node says where it runs — `DEVICE`, `+ CLOUD` (vision detector), `TO CLOUD`, `CLOUD`. Click a node to
-  jump to that stage's card.
-- **Steps**: finished steps fold into one line — action, ✓/✗, coloured stage dots and duration. Click to expand, or
-  use *Expand all / Collapse all*. Cards are numbered by stage and edged green (on-device) or violet (cloud).
-- **New Tab page**: Chrome blocks extensions on it, so Stellar opens google.com in that tab and starts from there.
-- **CAPTCHAs / bot checks**: Stellar never solves them. When a Cloudflare Turnstile, reCAPTCHA, hCaptcha,
-  Arkose or Cloudflare “Just a moment…” check is on screen, the agent pauses *before* any model call, shows a
-  **Human verification needed** card and an on-page message, and resumes by itself as soon as the check is
-  cleared (or when you click *I’ve done it — continue*). Model actions that target a CAPTCHA widget are blocked.
-- **Continue a task**: every finished task ends with a *Continue this task* box. A follow-up runs in the same
-  task card with the earlier steps and result as context (“now upload my résumé too”), also after reopening the
-  panel.
-- **People's names hidden** (Settings → Privacy, on by default): other people's names on the page — and yours —
-  become tags like `[NAME_02]`. A value keeps the same tag for the whole task (also in your task text, element
-  labels and earlier steps), so Gemini can still say who is who and click "Message" for the right person; job
-  titles, companies and places stay visible. In the answer shown to you, names are filled back in locally.
-- **Files in the private vault**: Settings → Private vault → *Add file…* with a toggle — **Extract details**
-  (name, email… into the vault), **Store the file** (kept on this device for upload fields), or **Both** (best
-  for a résumé). Stored files appear to the AI only as tags like `[FILE_RESUME]`; Stellar detects upload fields
-  — also hidden ones behind a styled “Upload résumé” button — and attaches the file straight from this device
-  with the `upload` action (it never opens the computer's file picker). Safe mode asks before uploading.
-- **Pop-ups and new tabs**: Stellar follows a tab or “Sign in with Google” window a click opens, and when that
-  window closes itself after signing in it carries on in the page that opened it.
-- **Voice, any language**: press 🎤 in the task box and speak. Chrome's speech recognition types it live; the
-  run starts 2 s later unless you click the box to edit. Chrome's recogniser writes everything in the
-  language it listens in (Telugu comes out as Hindi if it listened in Hindi), so with *Auto* its text is only
-  a live preview: Gemini then identifies the spoken language from the clip — including English words mixed
-  into Telugu, Hindi, Tamil… — transcribes it, and Stellar remembers that language. Or pick a language from
-  the menu to skip that check. Stellar answers in that language — typed non-English tasks too — and reads its
-  questions and the result aloud with the browser's voice (Settings → Agent). For Local-first, the on-device
-  planner gets an English copy of the task. The first time, a tab opens to allow the microphone (the side
-  panel can't show that prompt). Note: Chrome's recogniser sends the audio to Google's speech service.
-- **Real mouse & keyboard** (Settings → Agent, on by default): clicks, typing and keys go through Chrome's real
-  input via the debugger protocol — the reason the extension asks for the `debugger` permission. That makes
-  React/Vue-controlled fields, rich-text editors, custom dropdowns and buttons that ignore scripted events work.
-  Typing is read back and falls back to scripted events if it didn't take; native `<select>` menus are set
-  directly. Chrome shows a “started debugging this browser” bar while a task runs. **CAPTCHAs and bot checks
-  are never clicked** — points on them are refused and the run hands over to you.
-- **Autofilled logins**: Chrome fills saved logins on page load but hides the values from the site (and from
-  extensions) until a *real* click — so a plain scripted Sign-in submits empty fields. Stellar spots these
-  fields, masks them in the frame, and makes one real click on a blank part of the login form (never a button,
-  field, link or CAPTCHA). With real input off, it asks you to click the page once instead. The password is
-  never read or sent.
-- **Smooth follow & guided pace**: while a task runs, the panel glides to each new card (no jumps) and the newest card glows briefly. Scroll up to read and following pauses — press **↓ Follow live** or scroll to the bottom to resume. With **Settings → Pace → Guided** (default) each stage stays on screen for about a second before the next one starts, so people can follow along; choose **Fast** for full speed.
-- **Theme**: follows your system light/dark setting; the ◐ button in the header cycles System → Light → Dark.
+### The solution
 
-### Demo page
+Stellar is a Manifest V3 Chrome extension that puts a **local privacy layer** between the page and the model. Each step works like this:
 
-`demo/` is a fictional "Orbit Cloud" site that works **fully offline** (no external
-fonts, scripts or images) and has a page for every feature:
+1. The current tab is captured, and every visible interactive element gets a tag such as `[BUTTON_03]`.
+2. Private data is found **on the device** using DOM rules, regexes, your private vault and a WebAssembly face detector.
+3. That data is **redacted**: faces are blurred, secrets are blacked out, and other personal data is masked with semantic tags such as `[EMAIL_01]` or `[PASSWORD_01]`.
+4. A **leak check** scans the outgoing text. Then **only the sanitized frame** and a scrubbed prompt go to Google Gemini.
+5. Gemini proposes **one** JSON action. A **local validator** approves it, blocks it, or asks you first. Tags are turned back into real values **locally**, and the action runs on the page.
 
-| Page | Shows |
-|---|---|
-| Dashboard | names/email/phone in text, a photo with a face (NASA, public domain) → on-device face blur |
-| Profile | PAN, Aadhaar, DOB, address → semantic tags |
-| Billing | card, CVV, bank account, IFSC → solid black; plan dropdown; *Delete account* (risky); a scanned receipt whose text is *inside an image* (only "+ Cloud vision" reads it) |
-| Orders | a table to reason over ("which order is pending?") |
-| Support | the ticket form (vault fill, dropdown, message, send) |
-| Developers | `sk-…`, `AIza…`, `ghp_…`, a JWT and a Bearer token in a code block; a planted **prompt injection** asking the AI to paste the key |
-| Careers | a long application form with required fields (phone is missing from the preset vault → Stellar asks and saves it) and a consent checkbox |
-| Help centre | search → results → article (multi-page task, answer "14 days") |
-| Security | filled password and OTP fields |
-| Newsletter | a **simulated, offline** bot check, so the CAPTCHA pause → you tick → auto-resume can be shown without internet |
-| Demo guide | the vault preset, copy buttons for every task, and sample files for vault import (`demo/samples/`: ID card PNG, scanned PDF, résumé .docx, contact .vcf — fictional people) |
+In **Local-first** mode, an on-device vision-language model (FastVLM-0.5B on WebGPU) handles the simple steps itself, like filling known fields or submitting a form it just filled. Those steps send nothing to the cloud at all.
 
-```bash
-python -m http.server 8765
+Every stage is shown live in Chrome's side panel, so you can see exactly what leaves the machine.
+
+## ✨ Key Features
+
+**Privacy pipeline**
+
+<table>
+  <tr>
+    <td width="33%" valign="top">🔐 <b>No network request before redaction (default)</b><br/>PII detection uses DOM rules plus on-device face detection. A <i>Snapshot</i> makes no reasoning call.</td>
+    <td width="33%" valign="top">🏷️ <b>Semantic tags instead of values</b><br/>The same value keeps the same tag for the whole task, including follow-ups, so the model can still reason about "who is who".</td>
+    <td width="33%" valign="top">🕶️ <b>Category-based redaction policy</b><br/>faces, signatures and private images are pixelated and blurred. Passwords, API keys, OTPs, CVVs, cards, bank details and government IDs are blacked out. Other PII is masked and labelled.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">🚦 <b>Outbound leak check</b><br/>A request is blocked if any known private value appears in the outgoing text.</td>
+    <td width="33%" valign="top">🛡️ <b>Local action validation</b><br/>an action-type allow-list, a check that the target is a real visible and enabled element, a loop guard, a check that tags are never put into URLs, a guard against pasting on-page secrets elsewhere, and approval prompts for risky actions.</td>
+    <td width="33%" valign="top">📊 <b>Privacy report</b><br/>after each task (for example, "Hid 3 emails, 1 password and 2 names. Sent 0 private items to the cloud."). The report is also included in the JSON run export.</td>
+  </tr>
+</table>
+
+**Agent capabilities**
+
+<table>
+  <tr>
+    <td width="33%" valign="top">🤖 <b>Run agent</b><br/>a multi-step browser automation loop (default 15 steps, configurable up to 50) with <code>click / type / select / upload / scroll / press_key / navigate / go_back / wait / done / ask_user</code> actions.</td>
+    <td width="33%" valign="top">🖱️ <b>Real mouse and keyboard</b><br/>through the Chrome debugger protocol, which works with React and Vue fields, rich-text editors and custom dropdowns. If that fails, Stellar falls back to scripted DOM events.</td>
+    <td width="33%" valign="top">💻 <b>Code editors</b><br/>writes into Monaco, CodeMirror and Ace through each editor's own API when the page exposes it.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">🔒 <b>Private vault</b><br/>stores <code>KEY=value</code> personal details and files (for example a résumé) that the model only sees as <code>[VAULT_EMAIL]</code> or <code>[FILE_RESUME]</code>. Files are attached to upload fields straight from IndexedDB.</td>
+    <td width="33%" valign="top">📥 <b>Vault import</b><br/>from images, PDFs, <code>.docx</code>, <code>.vcf</code>, <code>.txt</code>, <code>.csv</code> and <code>.json</code>. Import runs either on-device (pdf.js, FastVLM, local parsers) or through Gemini.</td>
+    <td width="33%" valign="top">🙋 <b>Asks for missing details</b><br/>If a required field needs personal data the vault doesn't have, Stellar asks you once and can save the answer to the vault.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">🧩 <b>CAPTCHA handoff</b><br/>Turnstile, reCAPTCHA, hCaptcha, Arkose and Cloudflare challenge pages are detected. Stellar pauses before any model call, never clicks them, and resumes once you have solved the check.</td>
+    <td width="33%" valign="top">🔓 <b>Unlocking autofilled logins</b><br/>Chrome hides saved-login values until a real click. Stellar makes one real click on a blank part of the form to release them, and never reads or sends the password.</td>
+    <td width="33%" valign="top">🎛️ <b>Safe and Autopilot modes</b><br/>Safe asks before risky steps. Autopilot auto-approves them, but some checks are never auto-approved and get blocked instead.</td>
+  </tr>
+</table>
+
+**Tools**
+
+<table>
+  <tr>
+    <td width="50%" valign="top"><b>📝 Summarize page</b><br/>reads the page text on-device, tags private values, then asks Gemini for a plain-language summary with a <i>Watch out for</i> list. You can then ask follow-up questions about the page.</td>
+    <td width="50%" valign="top"><b>⚖️ Compare prices</b><br/>opens Amazon, Flipkart and Myntra (Ajio, Meesho and Snapdeal are optional) in background tabs at the same time and reads only the product cards. It builds a cheapest-first table, with an optional budget filter and a Gemini verdict.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><b>⏰ Schedule</b><br/>turns sentences like <i>"every morning at 9, check train ticket prices"</i> into recurring <code>chrome.alarms</code> tasks. Results arrive as notifications. There is also a daily "Watch price" option for comparisons.</td>
+    <td width="50%" valign="top"><b>🎤 Voice input in many languages</b><br/>live preview through Web Speech recognition. Gemini identifies the spoken language and transcribes it, and replies are read aloud with browser speech synthesis.</td>
+  </tr>
+</table>
+
+**Presentation and UI**
+- Task tabs, a 7-stage rail, collapsible step cards, a "Guided" pace that pauses briefly on each stage, *Follow live* scrolling, a presenter mode that blurs raw captures, a pop-out window, 13 light colour palettes plus Dark, and keyboard shortcuts.
+
+## 🧰 Tech Stack
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=js,html,css,wasm,py&theme=dark" alt="JavaScript, HTML, CSS, WebAssembly, Python"/>
+</p>
+
+| Layer | Technology | Notes |
+| --- | --- | --- |
+| Platform | Chrome Extension, **Manifest V3** | Side panel UI and a module service worker (`background.js`) |
+| Language | Vanilla **JavaScript (ES modules)**, HTML, CSS | No framework, no bundler, no `package.json`. Runs as-is |
+| Cloud reasoning | **Google Gemini** REST API (`generativelanguage.googleapis.com/v1beta`) | `generateContent` with JSON response schemas. Rotates between multiple keys and falls back to other models |
+| On-device VLM | **Transformers.js 4.3.1** + **ONNX Runtime Web** | `onnx-community/FastVLM-0.5B-ONNX` in a Web Worker. Uses WebGPU, or WASM if WebGPU is unavailable |
+| On-device face detection | **MediaPipe Tasks Vision** (BlazeFace short-range, ~230 KB) | WebAssembly. The model is bundled in `vendor/mediapipe/` |
+| PDF parsing | **pdf.js** (`pdfjs-dist`) | Used for importing files into the vault on-device |
+| Browser APIs | `chrome.sidePanel`, `scripting`, `tabs`, `debugger`, `alarms`, `notifications`, `storage`; IndexedDB; Canvas; Web Speech; `speechSynthesis`; `DecompressionStream` | |
+| Demo server | Python 3 standard library (`http.server`) | Only needed for the offline demo site |
+
+> [!NOTE]
+> Exact versions and licenses of the vendored libraries are listed in [`vendor/README.md`](vendor/README.md).
+
+## 📐 Architecture
+
+```mermaid
+flowchart LR
+    subgraph Chrome["Chrome (on your device)"]
+        BG["background.js<br/>service worker<br/>(panel behaviour, alarms, notifications)"]
+        SP["Side panel<br/>sidepanel.html / sidepanel.js"]
+        AG["agent.js<br/>pipeline loop"]
+        PV["privacy.js · redact.js · validate.js<br/>tags, scrubbing, leak check, gate"]
+        LM["local/vlm.js → vlm-worker.js<br/>FastVLM-0.5B (WebGPU/WASM)"]
+        FD["local/faces.js<br/>MediaPipe BlazeFace (WASM)"]
+        CS["content/content.js<br/>injected on demand:<br/>element tagging, DOM PII,<br/>CAPTCHA detection, executor"]
+        RI["real-input.js<br/>chrome.debugger input"]
+        ST[("chrome.storage.local<br/>settings, vault text, schedules<br/>IndexedDB: vault files")]
+    end
+
+    TAB["Web page (active tab)"]
+    GEM["Google Gemini API<br/>(sanitized frame + tagged text)"]
+    HF["Hugging Face<br/>(FastVLM weights, first download)"]
+
+    BG -- opens --> SP
+    BG -- "scheduled task → runner window" --> SP
+    SP --> AG
+    AG --> PV
+    AG --> LM
+    AG --> FD
+    AG -- "chrome.scripting.executeScript" --> CS
+    CS <--> TAB
+    AG --> RI --> TAB
+    AG <--> ST
+    PV -- "only after redaction + leak check" --> GEM
+    LM -. "one-time model download" .-> HF
+
+    classDef dev fill:#1E1B4B,stroke:#7C3AED,stroke-width:2px,color:#F5F3FF
+    classDef privacy fill:#4C1D95,stroke:#C4B5FD,stroke-width:2px,color:#FFFFFF
+    classDef ai fill:#064E3B,stroke:#34D399,stroke-width:2px,color:#ECFDF5
+    classDef ext fill:#083344,stroke:#22D3EE,stroke-width:2px,color:#ECFEFF
+    class BG,SP,AG,CS,RI,ST dev
+    class PV privacy
+    class LM,FD ai
+    class TAB,GEM,HF ext
+    style Chrome fill:#0F0C29,stroke:#7C3AED,stroke-width:2px,color:#E9D5FF
 ```
 
-Then open <http://localhost:8765/demo/> and start from **Demo guide**. (Opening it as a
-`file://` URL also works if you enable **Allow access to file URLs** for the extension.)
+**How the parts talk to each other**
 
-Measured with Local-first + Autopilot (real Gemini, FastVLM on WebGPU):
+- The **service worker** (`background.js`) is small. It makes the toolbar icon (or <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) open the side panel, sets up scheduled-task alarms, opens a runner pop-up window when an alarm fires, and opens the result when you click a notification.
+- The **side panel** is where all the logic runs. `sidepanel.js` builds the UI and wires the settings. `agent.js` runs the pipeline.
+- The **content script** is *not* auto-injected. The panel injects `content/content.js` with `chrome.scripting.executeScript` and then calls `window.__stellar.handle({ op, ... })`. The supported operations include `scan`, `readtext`, `products`, `challenge`, `autofill`, `quiet-point`, `point`, `readback`, `upload`, `paste`, `focus`, `inspect`, `execute`, `overlay` and `overlay-remove`.
+- **Gemini** is called directly from the panel with `fetch`. There is no Stellar backend server.
 
-| Task | On-device steps | Gemini calls | Time |
-|---|---|---|---|
-| Billing support ticket from the vault | 5 of 6 (Gemini: final check) | 1 | 13 s |
-| Careers application, phone missing | asks once, then 12 of 13 on-device | 1 | 21 s |
-| Switch plan to Basic | 2 of 3 | 1 | 17 s |
-| Help-centre refund question | search on-device, Gemini opens the article and answers | 2 | 10 s |
-| Feedback on a page with a prompt injection | 2 of 3, no key pasted | 1 | 10 s |
-| Newsletter behind the bot check | pauses for you, then 2 of 3 on-device | 1 | 13 s |
+## 🔑 Permissions
 
-The model only ever sees tags such as `[VAULT_NAME]` or `[API_KEY_01]`; real values are
-typed in locally after validation, and they are redacted again on the next frame.
+| Permission | Why it is needed (from the code) |
+| --- | --- |
+| `sidePanel` | Shows the Stellar UI in Chrome's side panel and opens it on toolbar click |
+| `tabs` | Reads the active tab's URL and status, follows new tabs and pop-ups, opens store tabs for price comparison, and navigates or goes back |
+| `activeTab` | Access to the tab the user invokes Stellar on |
+| `scripting` | Injects `content/content.js` on demand and runs editor-API helpers in the page's main world |
+| `storage` | Stores settings, the vault text, schedules (`chrome.storage.local`) and scheduler run state (`chrome.storage.session`) |
+| `debugger` | **Real mouse and keyboard input** (`Input.dispatchMouseEvent`, `Input.dispatchKeyEvent`, `Input.insertText`), used for framework-controlled fields and for unlocking autofilled logins. Chrome shows a "started debugging this browser" bar while it is attached. You can turn it off in Settings → Agent |
+| `alarms` | Fires scheduled tasks |
+| `notifications` | Shows the result of a scheduled task |
+| Host: `<all_urls>` | Lets the agent capture, scan and act on whatever site you point it at |
 
----
+> [!NOTE]
+> The manifest also sets `script-src 'self' 'wasm-unsafe-eval'` so the vendored WebAssembly runtimes (MediaPipe and ONNX Runtime) can run. All code ships inside the package because MV3 does not allow remote code.
 
-## What each stage does
+## 📂 Project Structure
+
+<details>
+<summary><b>Show the full project tree</b></summary>
+
+```
+stellarextension/
+├── manifest.json              # MV3 manifest: side panel, service worker, permissions, Alt+Shift+S command
+├── background.js              # Service worker: panel behaviour, schedule alarms, notification clicks
+├── content/
+│   └── content.js             # Injected on demand: element tagging (Set-of-Marks), DOM PII + name detection,
+│                              # CAPTCHA/autofill detection, product-card reader, action executor, page overlay
+├── sidepanel/
+│   ├── sidepanel.html/.js     # Panel UI: task tabs, stage rail, cards, settings, approvals, tools
+│   ├── sidepanel.css, theme.css  # Styles and colour palettes
+│   ├── agent.js               # Capture → Detect → Redact → Send → Reason → Validate → Execute loop
+│   ├── gemini.js              # Gemini REST client: JSON output, key rotation, model fallback, backoff
+│   ├── prompts.js             # Detector/agent prompts, action types and JSON schemas
+│   ├── privacy.js             # Region merging, semantic tags, text/URL scrubbing, leak check, tag substitution
+│   ├── redact.js              # Canvas rendering: detection overlay, blur/black/mask redaction, JPEG encode
+│   ├── validate.js            # Local action-validation gate (allow / confirm / block)
+│   ├── real-input.js          # Real mouse/keyboard input through chrome.debugger
+│   ├── settings.js            # Defaults and persisted settings (chrome.storage.local)
+│   ├── report.js              # Per-task privacy report
+│   ├── summary.js             # Summarize page + "Ask about this page"
+│   ├── compare.js             # Multi-store price comparison
+│   ├── schedules.js           # Natural-language schedule parsing, alarms, runner window
+│   ├── voice.js               # Speech recognition, language identification, speech synthesis
+│   ├── vault-import.js        # Extract vault fields from images, PDFs, .docx, .vcf, .csv, .json, text
+│   ├── vault-files.js         # Stored vault files in IndexedDB, used for upload fields
+│   ├── mic.html / mic.js      # One-time microphone permission page (the side panel can't prompt)
+│   └── local/
+│       ├── vlm.js             # Client for the on-device model: load, progress, auto-unload, cache check
+│       ├── vlm-worker.js      # FastVLM-0.5B in a module Web Worker (WebGPU / WASM)
+│       ├── planner.js         # On-device planner: candidate ranking + FastVLM choice
+│       └── faces.js           # MediaPipe BlazeFace face detection over the frame and image tiles
+├── vendor/                    # Vendored third-party bundles (Transformers.js, ONNX Runtime Web,
+│                              # pdf.js, MediaPipe + BlazeFace model). See vendor/README.md
+├── demo/                      # Offline "Orbit Cloud" demo site with fictional PII, plus serve.py
+│   ├── assets/                # Face photo, scanned receipt image
+│   └── samples/               # Fictional ID card PNG/PDF, résumé .docx, contact .vcf for vault import
+├── docs/
+│   ├── how-it-works.html      # One-page explainer
+│   └── stellar-flow.png/.svg  # Pipeline diagram
+└── icons/                     # Extension icons (16/32/48/128)
+```
+
+</details>
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Google Chrome**, or another Chromium browser that supports the Side Panel API and MV3.
+- A **Google Gemini API key** from [Google AI Studio](https://aistudio.google.com/apikey). You don't need one for *On-device only* mode or for a Snapshot with the default on-device detector.
+- *Optional:* a GPU with **WebGPU** support for fast on-device FastVLM inference. Without it, Stellar falls back to WASM. The first model download is about **670 MB**.
+- *Optional:* **Python 3**, only for serving the offline demo site.
+
+### Installation
+
+There is **no build step**. The repository is the unpacked extension.
+
+```bash
+git clone https://github.com/RohitMunnuru9/stellarextension.git
+```
+
+Or download the ZIP of the `main` branch from <https://github.com/RohitMunnuru9/stellarextension/archive/refs/heads/main.zip> and unzip it. Keep the folder somewhere permanent, because Chrome loads the extension from it.
+
+### Load the extension
+
+1. Open `chrome://extensions`.
+2. Turn on **Developer mode** (top-right).
+3. Click **Load unpacked** and select the folder that contains `manifest.json`.
+4. Pin the **Stellar** icon. Click it, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>, to open the side panel.
+
+> [!TIP]
+> **To update:** pull or replace the files, then click the reload icon on the Stellar card in `chrome://extensions`. Your settings and vault are kept in extension storage.
+
+### Configuration
+
+Stellar has **no `.env` file or environment variables**. All configuration lives in the panel's **Settings** (gear icon) and is saved to `chrome.storage.local` on your device:
+
+1. Paste one or more **Gemini API keys**, separated by commas or newlines. Then click **Test keys & load models**. Keys that are rejected or rate-limited are automatically skipped for a while.
+2. *Optional:* open **On-device model → Download & load** to fetch FastVLM-0.5B once. It is cached in the browser's Cache Storage.
+3. *Optional:* fill the **Private vault** with `KEY=value` lines (for example `EMAIL=...`, `PHONE=...`), or use **Add file…** to import or store documents.
+
+Main settings keys (see `sidepanel/settings.js` for all defaults):
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `apiKey` | `""` | One or more Gemini keys |
+| `reasonModel` | `gemini-3.6-flash` | Model that picks actions and writes summaries |
+| `detectModel` | `gemini-3.5-flash-lite` | Model for optional cloud PII detection, translation and voice |
+| `detector` | `local` | `local` (DOM rules + on-device faces) or `vision` (also sends the **unredacted** frame to Gemini, for comparison) |
+| `localBackup` | `localfirst` | `localfirst`, `auto` (Gemini-first with on-device fallback), `always` (on-device only), or `off` (Gemini only) |
+| `runMode` | `safe` | `safe` or `autopilot` |
+| `maxSteps` | `15` | Step limit per task (capped at 50) |
+| `realClick` | `true` | Use real mouse and keyboard through `chrome.debugger` |
+| `redactNames` | `true` | Hide people's names behind `[NAME_xx]` tags |
+| `vaultExtract` | `gemini` | Vault file import: `gemini` (uploads the file) or `local` |
+| `compareShops` | `amazon, flipkart, myntra` | Stores used by Compare prices |
+| `pace` | `guided` | `guided` (short pause per stage) or `fast` |
+
+> [!NOTE]
+> If a model is overloaded, rate-limited or slow (>35 s), the client tries your other keys, then works through `FALLBACK_MODELS` in `sidepanel/gemini.js`, then backs off and retries.
+
+## 📖 Usage
+
+<!-- Screenshot placeholder: side panel showing the stage rail and a redacted frame -->
+
+| Control | What it does |
+| --- | --- |
+| **Run agent** | Type a task (e.g. *"Search for wireless earbuds and open the cheapest result"*) and press **Run** or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> |
+| **Snapshot** | Runs Capture → Detect → Redact and shows the exact payload that *would* be sent. Makes no reasoning call |
+| **Stop** | Aborts the in-flight Gemini call and stops the loop |
+| **Safe / Autopilot** | Switch next to *Run agent* |
+| 📝 **Summarize page** | Plain-language summary of the current page, plus *Ask about this page* follow-ups |
+| ⚖️ **Compare prices** | Type a product (e.g. *boAt Airdopes 141 under 2000*) and press it |
+| ⏰ **Schedule** | Type a sentence with a time (e.g. *"every weekday at 8:30 am …"*). Stellar fills in the time and days |
+| 🎤 | Speak a task in any supported language |
+| Presenter mode | Blurs raw captures in the panel so you can screen-share safely |
+| Pop-out | Opens the panel in its own window. It drives the last-focused browser window |
+| **Export run** | Downloads a JSON log of the run with sanitized frames and the privacy report |
+
+**Keyboard:** <kbd>/</kbd> focuses the task box, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> runs, and <kbd>↑</kbd>/<kbd>↓</kbd> in an empty box step through recent tasks.
+
+**Continue a task:** a finished task shows a *Continue this task* box. The follow-up runs with the earlier steps and result as context, and tags stay the same as before.
+
+> [!IMPORTANT]
+> **Scheduled tasks:** Chrome must be running at the scheduled time. If it wasn't, the task still runs when Chrome starts, as long as that is no more than 6 hours late. The task runs in its own browser window, and the answer appears as a notification.
+
+## 🧠 How It Works
+
+### The seven stages
 
 | # | Stage | Where | Implementation |
 | --- | --- | --- | --- |
-| 1 | **Capture** | on-device | `chrome.tabs.captureVisibleTab` + a DOM scan that tags every visible interactive element (`[BUTTON_03]`, `[INPUT_02]`, `[LINK_07]`…) — Set-of-Marks style. |
-| 2 | **Detect** | on-device | **DOM rules**: password/OTP/card/autofill fields, and regexes over visible text for emails, phones, cards (Luhn-checked), Aadhaar, PAN, API keys/JWTs, and your vault values. **People's names** found where sites mark them (profile links, "X's profile picture" labels, author/username fields, "Name <email>") and hidden wherever they appear. **On-device face detection** (MediaPipe BlazeFace, WebAssembly) over the whole frame, every visible image, and overlapping tiles of each image — so all faces in a group photo or a YouTube thumbnail are blurred, not just the biggest. *Optional comparison mode:* Gemini vision also looks for names, addresses and text in images — this sends the unredacted frame, so it is off by default. |
-| 3 | **Redact** | on-device | Per PS 26171: **faces blurred** (pixelated + blurred), **passwords, keys, OTPs, cards and IDs blacked out**, **other PII masked** — each stamped with its semantic tag. The same value always gets the same tag. |
-| 4 | **Send** | → cloud | Only the sanitized JPEG + a scrubbed prompt (element labels, scrubbed URL/title, previous actions). A **leak check** blocks the request if any known private value appears in the outbound text. |
-| 5 | **Reason** | cloud | Gemini returns one JSON action: `click / type / select / scroll / press_key / navigate / go_back / wait / done / ask_user`. |
-| 6 | **Validate** | on-device | Allow-list, target must be a real visible enabled element from this frame, tags resolved to real values locally, unknown tags blocked, tags never substituted into URLs (exfiltration guard), loop detection, and **user approval** for risky actions (pay / delete / submit / send / vault fills / typing into password fields). |
-| 7 | **Execute** | on-device | Content script performs the action on the real element (framework-safe value setting, full pointer sequence, Enter-to-submit), follows newly opened tabs, waits for the page to settle, loops. |
+| 1 | **Capture** | device | `chrome.tabs.captureVisibleTab` plus a DOM scan that tags up to 150 visible interactive elements (`[BUTTON_03]`, `[INPUT_02]`, `[LINK_07]`, `[UPLOAD_01]` …) |
+| 2 | **Detect** | device | Password, OTP and card fields; regexes for emails, phones, Luhn-checked cards, Aadhaar, PAN, UPI and IFSC, API keys and JWTs; your vault values; people's names from profile links and labels; and **MediaPipe BlazeFace** over the whole frame, each visible image and overlapping tiles of those images. *Optional:* the Gemini vision detector |
+| 3 | **Redact** | device | Canvas rendering: blur (faces, images, signatures), solid black (credentials and IDs), dark mask (other PII), each stamped with its tag |
+| 4 | **Send** | → cloud | Sanitized JPEG + scrubbed prompt (element labels, URL with query values removed, history). Blocked if the leak check finds any known value |
+| 5 | **Reason** | cloud / device | Gemini returns `{observation, thought, status, action}` that matches `ACTION_SCHEMA`. In some modes FastVLM decides instead |
+| 6 | **Validate** | device | `validate.js` returns `allow`, `confirm` or `block` (see below) |
+| 7 | **Execute** | device | Real input through the debugger, or scripted DOM events. Follows new tabs and pop-ups, waits for the page to settle, then loops |
 
-### No network request before redaction
+### Local validation gate (`sidepanel/validate.js`)
 
-By default nothing leaves the machine until the frame is redacted, as PS 26171 requires: detection is DOM rules
-plus on-device face detection, and a Snapshot makes **zero** network requests. **Settings → PII detection →
-+ Cloud vision** adds Gemini as an extra detector for comparison; it sends the *unredacted* frame for that one call,
-and the panel labels the stage "local + cloud vision".
+- The action type must be on the allow-list, and the target must be an element from **this turn's** scan that is still attached, visible and enabled.
+- Targets inside a CAPTCHA are always blocked. Clicking a file input is blocked, because the `upload` action must be used instead.
+- Tags in `type` text are resolved **locally**. Unknown tags are blocked.
+- `navigate` must be `http(s)` and **may not contain any tag** (exfiltration guard).
+- If the same action is repeated three times in a row, or tried twice in recent steps without progress, it is blocked.
+- Risky labels (pay, delete, submit, send, …), vault fills and uploads need confirmation in Safe mode.
+- Pasting an on-page credential or ID into an ordinary (non-secret) field is a *hard* confirm, which is **blocked in Autopilot**.
 
----
+### Local-first decisions (`sidepanel/local/planner.js`)
 
-## On-device model (backup) and vault import
+A 0.5B model can't plan a whole task on its own. So the extension does the structured part itself:
 
-**FastVLM-0.5B** (Apple, ONNX via Transformers.js) runs in a Web Worker on **WebGPU** (WASM fallback). Open
-**Settings → On-device model → Download & load** once: about 670 MB, cached by the browser, roughly a minute the
-first time on a fast connection. Do this before a demo.
+1. It ranks candidate actions using word overlap with the task, the vault fields each label asks for, the form state, and submit-after-fill ordering.
+2. It treats a step as *confident* only when the value is fully determined: a vault field, a search term from the task, a message the task states, or a matching dropdown option. Submitting a form it has just filled also counts.
+3. Otherwise it asks FastVLM to pick from the top five candidates on the labelled frame. In Local-first mode, the ranking and the model must agree.
 
-**Who decides each step** (Settings → On-device model):
+Links, search results and menus are left to Gemini, and Gemini always does the final check on a redacted frame. If FastVLM isn't downloaded yet, Local-first quietly hands every step to Gemini.
 
-| Mode | What happens |
-| --- | --- |
-| **Local-first** (default) | Each step: **capture + label** (element tags drawn on the frame) → the on-device model tries. If it is sure — a determined fill (vault field, a message the task states, a matching dropdown option, a search term) or submitting the form it just filled — it acts **without redaction, because nothing leaves the device**. Otherwise **Detect → Redact → Send** run and Gemini decides on the sanitized frame. Links, results and menus are left to Gemini, and Gemini always does the **final verification** on a redacted frame. Demo billing task: 5 of 6 steps on-device (13 s); live Wikipedia: search on-device, reading and answer by Gemini (7 s). Each Gemini card says why the cloud was needed. |
-| **Gemini-first** | Gemini decides every step; the on-device model takes over if Gemini fails, so the demo keeps going. |
-| **On-device** | Nothing is sent to the cloud at all; FastVLM plans every step. Best for form-style tasks. |
-| **Gemini only** | No on-device decisions. |
+### Gemini client (`sidepanel/gemini.js`)
 
-**Safe / Autopilot** (the switch next to *Run agent*):
+- Each request uses `responseMimeType: application/json` with a response schema. For Gemini 3 models, Stellar requests `thinkingLevel: "low"` and drops that setting if the model rejects it.
+- Several keys are supported. A rejected key (401/403) is skipped for an hour. Keys that are rate-limited or overloaded are skipped for that model only, for as long as Google's `RetryInfo` says.
+- API keys are scrubbed from error messages before they reach the UI.
 
-| Mode | What happens |
-| --- | --- |
-| **Safe** | Asks before risky clicks (pay, delete, submit, send), vault fills and pasting secrets. |
-| **Autopilot** | Runs to the end without approval prompts. It still stops for real questions — a required field your vault can't fill, or a CAPTCHA — and it still *blocks* (never auto-approves) pasting an on-page password/key into an ordinary field and putting secrets into URLs. |
+## 🎮 Offline Demo Site
 
-**Missing details:** if a required field (`required`, `aria-required` or a trailing `*`) needs personal data your vault
-doesn't have, Stellar asks you once. The answer is saved to the vault (on by default) and from then on the AI only
-sees it as a tag such as `[VAULT_PHONE]` — the value never appears in what is sent to Gemini.
+`demo/` is a fictional "Orbit Cloud" web app that works fully offline. It has pages for every feature: names, emails and a face photo; PAN, Aadhaar and card details; a scanned receipt image; a page with **fake** API keys and a planted prompt injection; long forms with required fields; a help-centre search; and a simulated bot check. The `demo/samples/` folder has fictional files for testing vault import.
 
-How the backup plans: a 0.5B model cannot plan a whole task alone, so the extension narrows each step to the five
-most relevant actions (skipping finished ones, filling a form before its submit button, matching dropdown options and
-vault fields to the task) and FastVLM chooses between them while looking at the **sanitized** frame. Free text comes
-from the task when it says what to write ("asking to downgrade my plan"), otherwise FastVLM drafts it.
+Serve it from the repository root:
 
-Model choice was benchmarked in Chromium on WebGPU: SmolVLM-256M and SmolVLM-500M could not pick actions or read an
-ID card; FastVLM-0.5B read a test ID card 6/6 in about 1.5 s. Weights use fp16 vision + 4-bit decoder + 8-bit
-embeddings: same accuracy as the model card's ~1.1 GB setup at ~670 MB.
-
-**Import vault data from files** (Settings → Private vault → *Add file…*): *Extract with Gemini instead* is **on by
-default** — Gemini reads the file (it is uploaded to Google for that), which is the most accurate for résumés and
-scans. Switch it off to read everything on this device instead: ID-card photos and scanned PDFs by FastVLM, text
-PDFs via pdf.js, and `.docx`, `.vcf`, `.txt`, `.csv` and `.json` parsed locally. Either way you review and edit every
-field before it is saved.
-
-## Project layout
-
-```
-manifest.json            MV3 manifest (side panel, scripting, tabs, storage, alarms, notifications)
-background.js            opens the side panel on toolbar click / Alt+Shift+S; fires scheduled tasks
-content/content.js       DOM element tagging, DOM PII detection, action executor, page overlay
-sidepanel/
-  sidepanel.html/.css/.js  the live pipeline UI, settings, approvals
-  agent.js               the Capture→…→Execute loop
-  gemini.js              Gemini REST client (generateContent, listModels)
-  prompts.js             detector + agent prompts and JSON schemas
-  privacy.js             region merging, semantic tags, scrubbing, leak check, tag substitution
-  redact.js              canvas rendering of detection / sanitized frames
-  validate.js            local action-validation gate
-  settings.js            chrome.storage.local settings
-  vault-import.js        vault extraction from images, PDFs, .docx, .vcf, text
-  local/vlm-worker.js    FastVLM in a Web Worker (WebGPU / WASM)
-  local/vlm.js           client: load with progress, generate
-  local/planner.js       on-device backup planner
-  report.js              privacy report: counts of what was hidden / sent, in plain words
-  summary.js             Summarize page: on-device text read + tagging, then Gemini
-  compare.js             Compare prices: parallel store tabs, product-card reading, matching
-  schedules.js           scheduled tasks: parsing "every morning at 9", alarms, runner window
-demo/                    offline demo site (fake PII, face photo, forms, bot check) + sample vault files
-icons/                   extension icons
-vendor/                  Transformers.js, ONNX Runtime Web, pdf.js (see vendor/README.md)
+```bash
+python -m http.server 8765
+# then open http://localhost:8765/demo/
 ```
 
-## Limitations
+Or use the bundled script, which serves the `demo/` folder at both `/` and `/demo/` on port 8765:
 
-- Chrome blocks extensions on `chrome://` pages, the Web Store and some PDFs.
-- Cross-origin iframes and closed shadow roots aren't scanned by the DOM layer
-  (on-device face detection still covers the pixels; element tags won't exist for them).
-- Canvas-only apps (Figma, Google Docs editor) expose few DOM elements to act on.
-- Defaults: `gemini-3.6-flash` for reasoning, `gemini-3.5-flash-lite` for vision
-  detection (2–4 s, and far less congested). If a model is overloaded (503),
-  rate-limited or slow (>35 s), the client rotates through your keys, then falls
-  back along `3.6-flash → 3.5-flash-lite → 3.7-flash → 3-flash-preview →
-  3.1-flash-lite → 3.8-flash`, then backs off and retries. Use **Test key & load
-  models** to see which keys work and pick any model.
+```bash
+python demo/serve.py
+```
+
+> [!TIP]
+> Start from the **Demo guide** page. You can also open `demo/index.html` as a `file://` URL if you turn on **Allow access to file URLs** for the extension.
+
+## 🚧 Limitations
+
+- Chrome doesn't let extensions run on `chrome://` pages, the Chrome Web Store or the New Tab page. On a New Tab, Stellar opens google.com first.
+- The content script is injected into the top frame only, so elements inside cross-origin iframes are not tagged. On-device face detection still covers what is visible in the screenshot.
+- Canvas-only apps expose few DOM elements to act on.
+- CAPTCHAs and bot checks are never solved. You must complete them yourself.
+- **Cloud vision** detection mode, Gemini-based vault import and voice language identification send raw data (the unredacted frame, the document, or the audio clip) to Google. Chrome's speech recogniser also sends audio to Google's speech service.
+- A loaded FastVLM model uses a lot of memory. It is unloaded after a configurable idle period (10 minutes by default).
+- There is no automated test suite in the repository.
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository and create a feature branch.
+2. Make your changes. There is no build step, so edit the files directly.
+3. Reload the extension in `chrome://extensions` and test against real sites and the offline demo (`demo/`).
+4. Keep the privacy guarantees intact. Nothing should reach the network before redaction and the leak check, unless the user has explicitly opted in.
+5. Open a pull request that describes the change and how you tested it.
+
+## 📜 License
+
+The project itself has no license specified (there is no `LICENSE` file at the repository root).
+
+Vendored third-party libraries keep their own licenses: Transformers.js and pdf.js are Apache-2.0 (see `vendor/LICENSE.transformers` and `vendor/LICENSE.pdfjs`). [`vendor/README.md`](vendor/README.md) lists ONNX Runtime Web as MIT and MediaPipe as Apache-2.0.
+
+## 👤 Author
+
+**Rohit Munnuru**: [github.com/RohitMunnuru9](https://github.com/RohitMunnuru9)
+
+<p align="center">
+  Built with ❤️ by <a href="https://github.com/RohitMunnuru9"><b>Rohit Munnuru</b></a> · team <b>STELLAR_6</b><br/>
+  <sub>If this project helped or impressed you, drop a ⭐ — it really helps!</sub>
+</p>
+
+<p align="center"><a href="#readme-top">⬆ Back to top</a></p>
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:7C3AED,50:302B63,100:0F0C29&height=120&section=footer" width="100%" alt="Footer wave"/>
+</p>
